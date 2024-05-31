@@ -1,6 +1,6 @@
 import React from "react";
 import Image from "next/image";
-import { Button } from "@radix-ui/themes";
+import { Button } from "./ui/button";
 import { MenuIcon } from "lucide-react";
 
 export default function Header() {
