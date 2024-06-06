@@ -1,3 +1,4 @@
+import CategoryList from "@/components/CategoryList";
 import Header from "@/components/Header";
 import Search from "@/components/Search";
 
@@ -6,7 +7,10 @@ export default function Home() {
     <main className="flex min-h-screen flex-col">
       <Header />
       <div className="px-5 pt-6">
-      <Search />
+        <Search />
+      </div>
+      <div className="px-5 pt-6">
+        <CategoryList />
       </div>
     </main>
   );
