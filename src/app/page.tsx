@@ -41,12 +41,12 @@ export default async function Home() {
       </div>
       <div className="space-y-3 pt-6">
         <div className="px-5 flex justify-between items-center">
-          <h2 className="font-semibold">Pedidos Recomendados</h2>
+          <h2 className="font-semibold">Recommended Orders</h2>
           <Button
             variant="ghost"
             className="text-primary px-0 hover:bg-transparent h-fit"
           >
-            ver todos
+            see all
             <ChevronRightIcon size={16} />
           </Button>
         </div>
