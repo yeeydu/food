@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import db from "../lib/prisma";
 import PromoBanner from "@/components/PromoBanner";
+import RestaurantList from "@/components/RestauranList";
 
 export default async function Home() {
   const products = await db.product.findMany({
@@ -23,6 +24,7 @@ export default async function Home() {
       },
     },
   });
+
 
   return (
     <main className="flex min-h-screen flex-col">
@@ -57,6 +59,19 @@ export default async function Home() {
         src="/promo-banner-02.png" 
         alt="Desde 17 € " 
         />
+      </div>
+      <div className="space-y-4 py-6">
+        <div className="px-5 flex justify-between items-center">
+          <h2 className="font-semibold">Recommended Restaurants</h2>
+          <Button
+            variant="ghost"
+            className="text-primary px-0 hover:bg-transparent h-fit"
+          >
+            see all
+            <ChevronRightIcon size={16} />
+          </Button>
+        </div>
+        <RestaurantList   />
       </div>
     </main>
   );
