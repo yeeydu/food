@@ -5,8 +5,25 @@ import Search from "@/components/Search";
 import { Button } from "@/components/ui/button";
 import { ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
+import db from "../lib/prisma";
 
-export default function Home() {
+export default async function Home() {
+  const products = await db.product.findMany({
+    where: {
+      discountPercentage: {
+        gt: 0,
+      },
+    },
+    take: 10,
+    include: {
+      restaurant: {
+        select: {
+          name: true, // this way we get the restaurant name from the product restautantId relation
+        },
+      },
+    },
+  });
+
   return (
     <main className="flex min-h-screen flex-col">
       <Header />
@@ -30,12 +47,15 @@ export default function Home() {
       <div className="space-y-3 pt-6">
         <div className="px-5 flex justify-between items-center">
           <h2 className="font-semibold">Pedidos Recomendados</h2>
-          <Button variant="ghost" className="text-primary px-0 hover:bg-transparent h-fit">
+          <Button
+            variant="ghost"
+            className="text-primary px-0 hover:bg-transparent h-fit"
+          >
             ver todos
-            <ChevronRightIcon size={16}/>
+            <ChevronRightIcon size={16} />
           </Button>
         </div>
-        <ProductList />
+        <ProductList products={products} />
       </div>
     </main>
   );
