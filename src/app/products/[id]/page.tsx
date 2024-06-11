@@ -22,7 +22,7 @@ const ProductPage = async ({ params: { id } }: ProductPageId) => {
   const complementaryProducts = await db.product.findMany({ 
     where: {
       category: {
-        name: 'Su cos',
+        name: 'Sucos',
       },
       restaurant:{
         id: product?.restaurantId,
