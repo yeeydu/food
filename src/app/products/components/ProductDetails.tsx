@@ -49,7 +49,7 @@ const ProductDetails = ({
 
   return (
     <div>
-      <div className="p-5">
+      <div className="p-5 rounded-tl-3xl rounded-tr-3xl relative z-50 mt-[-1.5rem] bg-white">
         {/*restaurant*/}
         <div className="flex items-center gap-[0.375rem]">
           <div className="relative h-6 w-6">
