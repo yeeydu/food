@@ -14,7 +14,7 @@ interface ProductListProps {
   }>[];
 }
 
-export default async function ProductList({ products }: ProductListProps) {
+export default function ProductList({ products }: ProductListProps) {
   
   return (
     <div className="flex overflow-x-scroll gap-4 px-5 [&:: -webkit-scrollbar]:hidden ">
