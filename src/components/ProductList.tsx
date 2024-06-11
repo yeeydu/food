@@ -22,5 +22,5 @@ export default async function ProductList({ products }: ProductListProps) {
         <ProductItem product={product} key={product.id} />
       ))}
     </div>
-  );
+  ); 
 }
