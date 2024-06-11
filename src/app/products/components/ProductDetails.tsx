@@ -120,7 +120,7 @@ const ProductDetails = ({
             )}
           </div>
           <div className="flex flex-col items-center">
-            <div className="flex  items-center text-muted-foreground">
+            <div className="flex  items-center text- muted-foreground">
               <span className="text-xs ">Delivery Time{""}</span>
               <TimerIcon size={16} />
             </div>
@@ -139,6 +139,9 @@ const ProductDetails = ({
         </div>
       </div>
       <ProductList products={complementaryProduct}/>
+      <div className="px-5 mt-6">
+        <Button className="w-full font-semibold">Add to cart</Button>
+      </div>
     </div>
   );
 };
