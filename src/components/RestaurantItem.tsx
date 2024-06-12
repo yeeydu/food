@@ -4,15 +4,17 @@ import Image from "next/image";
 import { formatCurrency } from "./_helpers/Price";
 import { Button } from "./ui/button";
 import Link from "next/link";
+import { cn } from "@/lib/utils";
 
 interface RestaurantItemProps {
   restaurant: Restaurant;
+  className?: string,
 }
 
-const RestaurantItem = ({ restaurant }: RestaurantItemProps) => {
+const RestaurantItem = ({ restaurant, className }: RestaurantItemProps) => {
   return (
     <Link href={`/restaurants/${restaurant.id}`}>
-      <div className="min-w-[266px] max-w-[266px] space-y-3">
+      <div className={cn("min-w-[266px] max-w-[266px] space-y-3", className)}>
         <div className="relative w-full h-[136px]">
           <Image
             src={restaurant.imageUrl}
