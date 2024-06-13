@@ -45,15 +45,16 @@ export default async function Home() {
       <div className="space-y-3 pt-6">
         <div className="px-5 flex justify-between items-center">
           <h2 className="font-semibold">Recommended Orders</h2>
-         <Link href={"/products/recommended"}>
          <Button
             variant="ghost"
             className="text-primary px-0 hover:bg-transparent h-fit"
+            asChild
           >
+         <Link href={"/products/recommended"}>
             see all
             <ChevronRightIcon size={16} />
-          </Button>
          </Link>
+          </Button>
         </div>
         <ProductList products={products} />
       </div>
@@ -66,15 +67,16 @@ export default async function Home() {
       <div className="space-y-4 py-6">
         <div className="px-5 flex justify-between items-center">
           <h2 className="font-semibold">Recommended Restaurants</h2>
-          <Link href="/restaurants/recomended">
           <Button
             variant="ghost"
             className="text-primary px-0 hover:bg-transparent h-fit"
+            asChild
           >
+          <Link href="/restaurants/recomended">
             see all
             <ChevronRightIcon size={16} />
-          </Button>
           </Link>
+          </Button>
         </div>
         <RestaurantList   />
       </div>
