@@ -6,14 +6,14 @@ import {
 import DiscountBadge from "@/components/ui/discountBadge";
 import { Prisma } from "@prisma/client";
 import { Button } from "@/components/ui/button";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-} from "lucide-react";
+import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react";
 import Image from "next/image";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import ProductList from "@/components/ProductList";
 import DeliveryInfo from "@/components/DeliveryInfo";
+import { CartContext } from "@/app/context/cart";
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import Cart from "@/components/Cart";
 
 //ProductGetPayload is for getting one product only
 interface ProductDetailsProps {
@@ -35,6 +35,10 @@ const ProductDetails = ({
   complementaryProduct,
 }: ProductDetailsProps) => {
   const [quantity, setQuantity] = useState(1);
+  const [isCartOpen, setIsCartOpen] = useState(false);
+  const { addProductToCart, products } = useContext(CartContext);
+
+  console.log(product);
 
   const handleIncreaseQuantityClick = () =>
     setQuantity((prevState) => prevState + 1);
@@ -45,81 +49,103 @@ const ProductDetails = ({
       return prevState - 1;
     });
 
+  const handleAddToCartClick = () => {
+    addProductToCart(product, quantity);
+    setIsCartOpen(true);
+  };
+
   return (
-    <div>
-      <div className="p-5 rounded-tl-3xl rounded-tr-3xl relative z-50 mt-[-1.5rem] bg-white">
-        {/*restaurant*/}
-        <div className="flex items-center gap-[0.375rem]">
-          <div className="relative h-6 w-6">
-            <Image
-              src={product.restaurant.imageUrl}
-              alt={product.restaurant.name}
-              fill
-              className="rounded-full object-cover"
-            />
+    <>
+      <div>
+        <div className="p-5 rounded-tl-3xl rounded-tr-3xl relative z-50 mt-[-1.5rem] bg-white">
+          {/*restaurant*/}
+          <div className="flex items-center gap-[0.375rem]">
+            <div className="relative h-6 w-6">
+              <Image
+                src={product.restaurant.imageUrl}
+                alt={product.restaurant.name}
+                fill
+                className="rounded-full object-cover"
+              />
+            </div>
+            <span className="text-xs text-muted-foreground">
+              {product.restaurant.name}
+            </span>
           </div>
-          <span className="text-xs text-muted-foreground">
-            {product.restaurant.name}
-          </span>
-        </div>
-        {/*product name */}
-        <h1 className="font-semibold text-xl mb-3 mt-1 ">{product.name}</h1>
-        {/*price w/disc & quant*/}
-        <div className="flex justify-between">
-          <div>
-            <div className="flex items-center gap-2 ">
-              <h2 className="font-semibold text-xl">
-                {formatCurrency(calculateProductTotalPrice(product))}
-              </h2>
+          {/*product name */}
+          <h1 className="font-semibold text-xl mb-3 mt-1 ">{product.name}</h1>
+          {/*price w/disc & quant*/}
+          <div className="flex justify-between">
+            <div>
+              <div className="flex items-center gap-2 ">
+                <h2 className="font-semibold text-xl">
+                  {formatCurrency(calculateProductTotalPrice(product))}
+                </h2>
+                {product.discountPercentage > 0 && (
+                  <DiscountBadge product={product} />
+                )}
+              </div>
+              {/*price original*/}
               {product.discountPercentage > 0 && (
-                <DiscountBadge product={product} />
+                <p className="text-muted-foreground text-sm">
+                  from: {formatCurrency(Number(product.price))}
+                </p>
               )}
             </div>
-            {/*price original*/}
-            {product.discountPercentage > 0 && (
-              <p className="text-muted-foreground text-sm">
-                from: {formatCurrency(Number(product.price))}
-              </p>
-            )}
+            <div className="flex gap-3 items-center text-center">
+              <Button
+                size="icon"
+                variant="ghost"
+                className="border-muted-foreground border-solid border "
+                onClick={handleDecreaseQuantityClick}
+              >
+                <ChevronLeftIcon />
+              </Button>
+              <span className="w-4"> {quantity}</span>
+              <Button
+                size="icon"
+                variant="ghost"
+                className="border-muted-foreground border-solid border "
+                onClick={handleIncreaseQuantityClick}
+              >
+                <ChevronRightIcon />
+              </Button>
+            </div>
           </div>
-          <div className="flex gap-3 items-center text-center">
-            <Button
-              size="icon"
-              variant="ghost"
-              className="border-muted-foreground border-solid border "
-              onClick={handleDecreaseQuantityClick}
-            >
-              <ChevronLeftIcon />
-            </Button>
-            <span className="w-4"> {quantity}</span>
-            <Button
-              size="icon"
-              variant="ghost"
-              className="border-muted-foreground border-solid border "
-              onClick={handleIncreaseQuantityClick}
-            >
-              <ChevronRightIcon />
-            </Button>
+          {/*entrega price & time */}
+          <div className="px-5">
+            <DeliveryInfo restaurant={product.restaurant} />
+          </div>
+          {/* about */}
+          <div className="mt-6 space-y-3">
+            <h3 className="font-semibold">About</h3>
+            <p className="text-muted-foreground text-sm">
+              {product.description}
+            </p>
+          </div>
+          <div className="mt-6 space-y-3">
+            <h3 className="font-semibold">Related</h3>
           </div>
         </div>
-        {/*entrega price & time */}
-        <div className="px-5">
-        <DeliveryInfo restaurant={product.restaurant}/>
-      </div>
-        {/* about */}
-        <div className="mt-6 space-y-3">
-          <h3 className="font-semibold">About</h3>
-          <p className="text-muted-foreground text-sm">{product.description}</p>
-        </div>
-        <div className="mt-6 space-y-3">
-          <h3 className="font-semibold">Related</h3>
+        <ProductList products={complementaryProduct} />
+        <div className="px-5 mt-6">
+          <Button
+            className="w-full font-semibold"
+            onClick={handleAddToCartClick}
+          >
+            Add to cart
+          </Button>
         </div>
       </div>
-      <ProductList products={complementaryProduct}/>
-      <div className="px-5 mt-6">
-        <Button className="w-full font-semibold">Add to cart</Button>
-      </div>
-    </div>
+      <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
+        <SheetContent className="w-[90vw]">
+          <SheetHeader>
+          <SheetTitle className="text-left ">Cart</SheetTitle>
+          <Cart />
+          </SheetHeader>
+        </SheetContent>
+      </Sheet>
+    </>
   );
 };
 
