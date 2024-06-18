@@ -22,7 +22,19 @@ interface ICartContext {
   totalPrice: number;
   totalDiscounts: number;
   products: CartProduct[];
-  addProductToCart: (product: Product, quantity: number) => void;
+  addProductToCart: ({ product, quantity, emptyCart }: {
+    product: Prisma.ProductGetPayload<{
+        include: {
+            restaurant: {
+                select: {
+                    deliveryFee: true;
+                };
+            };
+        };
+    }>;
+    quantity: number;
+    emptyCart?: boolean;
+}) => void;
   decreaseQuantityClick: (productId: string) => void;
   increaseQuantityClick: (productId: string) => void;
   removeProductFromCart: (productId: string) => void;
@@ -43,17 +55,26 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
   const [products, setProducts] = useState<CartProduct[]>([]);
 
   const addProductToCart = (
-    product: Prisma.ProductGetPayload<{
-      include: {
-        restaurant: {
-          select: {
-            deliveryFee: true;
-          };  
+    {product, quantity, emptyCart}: {
+      product: Prisma.ProductGetPayload<{
+        include: {
+          restaurant: {
+            select: {
+              deliveryFee: true;
+            };  
+          };
         };
-      };
-    }>,
-    quantity: number
+      }>,
+      quantity: number,
+      emptyCart?: boolean,
+    }
   ) => {
+
+    if(emptyCart){
+      setProducts([]);
+    }
+
+    // product is in the cart 
     const isProductOnCart = products.some(
       (cartProduct) => cartProduct.id === product.id
     );
@@ -79,7 +100,7 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       // reduce takes a number from a list.
       return acc + Number(product.price) * product.quantity;
     }, 0);
-  }, [products]);
+  }, [products]); 
 
   // total with discount
   const totalPrice = useMemo(() => {

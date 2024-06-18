@@ -12,8 +12,23 @@ import { useContext, useState } from "react";
 import ProductList from "@/components/ProductList";
 import DeliveryInfo from "@/components/DeliveryInfo";
 import { CartContext } from "@/app/context/cart";
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
+import {
+  Sheet,
+  SheetContent,
+  SheetHeader,
+  SheetTitle,
+} from "@/components/ui/sheet";
 import Cart from "@/components/Cart";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog";
 
 //ProductGetPayload is for getting one product only
 interface ProductDetailsProps {
@@ -36,9 +51,9 @@ const ProductDetails = ({
 }: ProductDetailsProps) => {
   const [quantity, setQuantity] = useState(1);
   const [isCartOpen, setIsCartOpen] = useState(false);
+  const [isConfirmationDialogOpen, setIsConfirmationDialogOpen] =
+    useState(false);
   const { addProductToCart, products } = useContext(CartContext);
-
-  console.log(product);
 
   const handleIncreaseQuantityClick = () =>
     setQuantity((prevState) => prevState + 1);
@@ -49,9 +64,21 @@ const ProductDetails = ({
       return prevState - 1;
     });
 
-  const handleAddToCartClick = () => {
-    addProductToCart(product, quantity);
+  const addToCart = ({ emptyCart }: { emptyCart?: boolean }) => {
+    addProductToCart({ product, quantity, emptyCart });
     setIsCartOpen(true);
+  };
+
+  const handleAddToCartClick = () => {
+    const hasDifferentRestaurantProduct = products.some(
+      (cartProduct) => cartProduct.restaurantId !== product.restaurantId
+    );
+
+    if (hasDifferentRestaurantProduct) {
+      return setIsConfirmationDialogOpen(true);
+    }
+
+    addToCart({ emptyCart: false });
   };
 
   return (
@@ -140,11 +167,33 @@ const ProductDetails = ({
       <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
         <SheetContent className="w-[90vw]">
           <SheetHeader>
-          <SheetTitle className="text-left ">Cart</SheetTitle>
-          <Cart />
+            <SheetTitle className="text-left ">Cart</SheetTitle>
+            <Cart />
           </SheetHeader>
         </SheetContent>
       </Sheet>
+      <AlertDialog
+        open={isConfirmationDialogOpen}
+        onOpenChange={setIsConfirmationDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>
+              Your cart have products from another restaurant
+            </AlertDialogTitle>
+            <AlertDialogDescription>
+              You can only have products from one restaurant in the cart. if you
+              continue it will delete all items and add this product.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Cancel</AlertDialogCancel>
+            <AlertDialogAction onClick={()=> addToCart({emptyCart: true})}>
+              Empty cart and add product
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   );
 };

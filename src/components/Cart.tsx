@@ -29,9 +29,9 @@ const Cart = () => {
             <div className="flex justify-between items-center text-xs">
               <p className=" text-muted-foreground">Delivery</p>
               <span className="text-sm font-semibold">
-                {Number(products[0].restaurant.deliveryFee) === 0
+                {Number(products?.[0].restaurant.deliveryFee) === 0
                   ? <span className="text-primary uppercase">Gratis</span>
-                  : formatCurrency(Number(products[0].restaurant.deliveryFee))}
+                  : formatCurrency(Number(products?.[0].restaurant.deliveryFee))}
               </span>
             </div>
             <Separator/>
