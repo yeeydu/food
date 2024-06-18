@@ -108,10 +108,10 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
       return (
         acc + calculateProductTotalPrice(product) * Number(product.quantity)
       );
-    }, 0);
+    }, 0) + Number(products?.[0]?.restaurant.deliveryFee);
   }, [products]);
 
-  const totalDiscounts = subTotalPrice - totalPrice;
+  const totalDiscounts = subTotalPrice - (totalPrice - Number(products?.[0]?.restaurant.deliveryFee));
 
   const decreaseQuantityClick = (productId: string) => {
     return setProducts((prev) =>
