@@ -2,11 +2,11 @@ import { notFound } from "next/navigation";
 import db from "../../../lib/prisma";
 import RestaurantImage from "../components/RestaurantImage";
 import Image from "next/image";
-import { BikeIcon, StarIcon, TimerIcon } from "lucide-react";
-import { Card } from "@radix-ui/themes";
-import { formatCurrency } from "@/components/_helpers/Price";
+import { StarIcon } from "lucide-react";
 import DeliveryInfo from "@/components/DeliveryInfo";
 import ProductList from "@/components/ProductList";
+import CartBanner from "./CartBanner";
+ 
 
 interface RestaurantPageProps {
   params: {
@@ -29,7 +29,7 @@ const RestaurantPage = async ({ params: { id } }: RestaurantPageProps) => {
             take: 10,
             include: {
               restaurant: {
-                select: { 
+                select: {
                   name: true,
                 },
               },
@@ -101,6 +101,7 @@ const RestaurantPage = async ({ params: { id } }: RestaurantPageProps) => {
           <ProductList products={category.products} />
         </div>
       ))}
+      <CartBanner restaurant={restaurant} />
     </>
   );
 };
