@@ -123,14 +123,14 @@ model OrderProduct {
 
 model Order {
   id                  String         @id @default(uuid())
-  userId              String
+  userId              String 
   user                User           @relation(fields: [userId], references: [id])
   products            OrderProduct[]
   restaurant          Restaurant     @relation(fields: [restaurantId], references: [id])
   restaurantId        String
   deliveryFee         Decimal        @db.Decimal(10, 2)
   deliveryTimeMinutes Int
-  subtotalPrice       Decimal        @db.Decimal(10, 2)
+  subTotalPrice       Decimal        @db.Decimal(10, 2)
   totalPrice          Decimal        @db.Decimal(10, 2)
   totalDiscounts      Decimal        @db.Decimal(10, 2)
   createdAt           DateTime       @default(now())
