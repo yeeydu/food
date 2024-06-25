@@ -1,4 +1,5 @@
 "use client";
+import { CartContext } from "@/app/context/cart";
 import { formatCurrency } from "@/components/_helpers/Price";
 import { Avatar, AvatarImage } from "@/components/ui/avatar";
 import { Button } from "@/components/ui/button";
@@ -8,6 +9,8 @@ import { OrderStatus, Prisma } from "@prisma/client";
 
 import { ChevronRightIcon, Divide } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useContext } from "react";
 
 interface OrderItemProps {
   order: Prisma.OrderGetPayload<{
@@ -38,6 +41,20 @@ const getOrderStatusLabel = (status: OrderStatus) => {
 };
 
 const OrderItem = ({ order }: OrderItemProps) => {
+
+  const router = useRouter();
+  const {addProductToCart} = useContext(CartContext);
+
+  const handleReOrderClick = () => {
+    for(const orderProduct of order.products){
+      addProductToCart({
+        product: {...orderProduct.product, restaurant: order.restaurant},
+        quantity: orderProduct.quantity
+      })
+    }
+    router.push(`/restaurants/${order.restaurantId}`)
+  }
+
   return (
     <Card>
       <CardContent className="p-5">
@@ -87,7 +104,8 @@ const OrderItem = ({ order }: OrderItemProps) => {
             variant="link"
             size="sm"
             className="text-primary text-xs"
-            disabled={order.status !== "COMPLETED"}
+            disabled={order.status === "COMPLETED"}
+            onClick={handleReOrderClick}
           >
             Add to cart
           </Button>
