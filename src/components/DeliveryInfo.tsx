@@ -1,4 +1,4 @@
-import { Card } from "@radix-ui/themes";
+import { Card } from "@/components/ui/card";
 import { BikeIcon, TimerIcon } from "lucide-react";
 import { formatCurrency } from "./_helpers/Price";
 import { Restaurant } from "@prisma/client";
