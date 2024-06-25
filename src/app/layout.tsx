@@ -4,6 +4,7 @@ import "./globals.css";
 import { Inter as FontSans } from "next/font/google";
 import { CartProvider } from "./context/cart";
 import AuthProvider from "./_providers/auth";
+import { Toaster } from "@/components/ui/sonner"
 
 const fontSans = FontSans({
   subsets: ["latin"],
@@ -27,6 +28,7 @@ export default function RootLayout({
       <body className={inter.className}>
         <AuthProvider>
           <CartProvider>{children}</CartProvider>
+          <Toaster/>
         </AuthProvider>
       </body>
     </html>

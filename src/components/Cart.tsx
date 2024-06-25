@@ -19,14 +19,21 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
   AlertDialogTrigger,
-} from "@/components/ui/alert-dialog"
+} from "@/components/ui/alert-dialog";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
-const Cart = () => {
+interface CartProps {
+  setIsOpen: (isOpen : boolean) => void;
+}
+
+const Cart = ({setIsOpen}: CartProps) => {
   const [isSubmitLoading, setIsSubmitLoading] = useState(false);
-  const [isConfirmedDialogOpen, setIsConfirmedDialogOpen ] = useState(false);
+  const [isConfirmedDialogOpen, setIsConfirmedDialogOpen] = useState(false);
   const { products, subTotalPrice, totalDiscounts, totalPrice, clearCart } =
     useContext(CartContext);
 
+  const router = useRouter();
   const { data } = useSession();
 
   const handleFinishOrderClick = async () => {
@@ -50,14 +57,22 @@ const Cart = () => {
         },
         products: {
           createMany: {
-            data: products.map((product)=> ({
+            data: products.map((product) => ({
               productId: product.id,
-              quantity: product.quantity
+              quantity: product.quantity,
             })),
-          } 
-        }
+          },
+        },
       });
       clearCart();
+      setIsOpen(false);
+      toast("Order successfully", {
+        description: "View your orders in the profile menu",
+        action: {
+          label: "My order",
+          onClick: () => router.push("/myOrders"),
+        },
+      });
     } catch (error) {
       console.log(error);
     } finally {
@@ -67,84 +82,90 @@ const Cart = () => {
 
   return (
     <>
-    <div className="flex-col h-full py-5">
-      {products.length > 0 ? (
-        <div className="flex-auto">
-          <div className="space-y-4">
-            {products.map((product) => (
-              <CartItem cartProduct={product} key={product.id} />
-            ))}
+      <div className="flex-col h-full py-5">
+        {products.length > 0 ? (
+          <div className="flex-auto">
+            <div className="space-y-4">
+              {products.map((product) => (
+                <CartItem cartProduct={product} key={product.id} />
+              ))}
+            </div>
+            <div className="mt-6">
+              <Card>
+                <CardContent className="p-5 space-y-2">
+                  <div className="flex justify-between items-center text-xs">
+                    <p className=" text-muted-foreground">Subtotal</p>
+                    <span className="text-sm font-semibold">
+                      {formatCurrency(subTotalPrice)}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-center text-xs">
+                    <p className=" text-muted-foreground">Delivery</p>
+                    <span className="text-sm font-semibold">
+                      {Number(products?.[0].restaurant.deliveryFee) === 0 ? (
+                        <span className="text-primary uppercase">Gratis</span>
+                      ) : (
+                        formatCurrency(
+                          Number(products?.[0].restaurant.deliveryFee)
+                        )
+                      )}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-center text-xs">
+                    <p className=" text-muted-foreground">Disco unt</p>
+                    <span className="text-sm font-semibold">
+                      -{formatCurrency(totalDiscounts)}
+                    </span>
+                  </div>
+                  <Separator />
+                  <div className="flex justify-between items-center text-xs">
+                    <p className=" font-semibold">Total</p>
+                    <span className="text-sm font-semibold">
+                      {formatCurrency(totalPrice)}
+                    </span>
+                  </div>
+                </CardContent>
+              </Card>
+            </div>
+            <Button
+              className="w-full mt-6"
+              onClick={() => setIsConfirmedDialogOpen(true)}
+            >
+              Finish Order
+            </Button>
           </div>
-          <div className="mt-6">
-            <Card>
-              <CardContent className="p-5 space-y-2">
-                <div className="flex justify-between items-center text-xs">
-                  <p className=" text-muted-foreground">Subtotal</p>
-                  <span className="text-sm font-semibold">
-                    {formatCurrency(subTotalPrice)}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between items-center text-xs">
-                  <p className=" text-muted-foreground">Delivery</p>
-                  <span className="text-sm font-semibold">
-                    {Number(products?.[0].restaurant.deliveryFee) === 0 ? (
-                      <span className="text-primary uppercase">Gratis</span>
-                    ) : (
-                      formatCurrency(
-                        Number(products?.[0].restaurant.deliveryFee)
-                      )
-                    )}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between items-center text-xs">
-                  <p className=" text-muted-foreground">Disco unt</p>
-                  <span className="text-sm font-semibold">
-                    -{formatCurrency(totalDiscounts)}
-                  </span>
-                </div>
-                <Separator />
-                <div className="flex justify-between items-center text-xs">
-                  <p className=" font-semibold">Total</p>
-                  <span className="text-sm font-semibold">
-                    {formatCurrency(totalPrice)}
-                  </span>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-          <Button className="w-full mt-6" onClick={()=> setIsConfirmedDialogOpen(true)} >
-         
-            Finish Order
-          </Button>
-        </div>
-      ) : (
-        <h2>Add a product to the cart</h2>
-      )}
-    </div>
-     <AlertDialog open={isConfirmedDialogOpen} onOpenChange={setIsConfirmedDialogOpen}>
-     <AlertDialogContent>
-       <AlertDialogHeader>
-         <AlertDialogTitle>Finish order?</AlertDialogTitle>
-         <AlertDialogDescription>
-           This action cannot be undone. This will order and delete
-           products from the list.
-         </AlertDialogDescription>
-       </AlertDialogHeader>
-       <AlertDialogFooter>
-         <AlertDialogCancel disabled={isSubmitLoading}>
-         {isSubmitLoading && (
-            
-            <Loader2  className="mr-2 h-4 w-4 animate-spin" />
-          )}
-          Cancel
-          </AlertDialogCancel>
-         <AlertDialogAction onClick={handleFinishOrderClick}>Finish</AlertDialogAction>
-       </AlertDialogFooter>
-     </AlertDialogContent>
-   </AlertDialog>
-   </>
+        ) : (
+          <h2>Add a product to the cart</h2>
+        )}
+      </div>
+      <AlertDialog
+        open={isConfirmedDialogOpen}
+        onOpenChange={setIsConfirmedDialogOpen}
+      >
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Finish order?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone. This will order and delete products
+              from the list.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel disabled={isSubmitLoading}>
+              {isSubmitLoading && (
+                <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+              )}
+              Cancel
+            </AlertDialogCancel>
+            <AlertDialogAction onClick={handleFinishOrderClick}>
+              Finish
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 };
 
