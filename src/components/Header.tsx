@@ -21,6 +21,7 @@ import {
 } from "@/components/ui/sheet";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import { Separator } from "./ui/separator";
+import MyOrdersPage from "@/app/myOrders/page";
 
 export default function Header() {
   const { data, status } = useSession(); // authProvider context
@@ -104,10 +105,13 @@ export default function Header() {
               <div className="space-y-2">
                 <Button
                   variant="ghost"
+                  asChild
                   className="space-x-3 w-full justify-start text-sm font-normal rounded-full"
                 >
-                  <ScrollTextIcon size={16} />{" "}
-                  <span className="block">Orders</span>
+                 <Link href={"/myOrders"}>
+                 <ScrollTextIcon size={16} />{" "}
+                 <span className="block">Orders</span>
+                 </Link>
                 </Button>
                 <Button
                   variant="ghost"
