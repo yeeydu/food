@@ -95,9 +95,12 @@ export default function Header() {
           <div>
             <Button
               variant="ghost"
+              asChild
               className="space-x-3 w-full justify-start text-sm font-normal rounded-full"
             >
+              <Link href={"/"}>
               <HomeIcon size={16} /> <span className="block">Home</span>
+              </Link>
             </Button>
           </div>
           {data?.user && (
