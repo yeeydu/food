@@ -81,5 +81,5 @@ export default async function Home() {
         <RestaurantList   />
       </div>
     </main>
-  );
+  ); 
 }

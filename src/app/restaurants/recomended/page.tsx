@@ -1,9 +1,29 @@
 import RestaurantItem from "@/components/RestaurantItem";
 import db from "../../../lib/prisma";
 import Header from "@/components/Header";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+
+interface UserFavoriteRestaurant {
+  userId: string;
+  restaurantId: string;
+}
 
 const RecomendedRestaurants = async () => {
+
+  const session = await getServerSession(authOptions);
   const restaurants = await db.restaurant.findMany({});
+
+  const userFavoriteRestaurant = await db.userFavoriteRestaurant.findMany({
+    where: {
+      userId: session?.user?.id
+    } 
+   })
+
+   const userFavoriteRestaurants: UserFavoriteRestaurant[] = userFavoriteRestaurant.map(fav => ({
+    userId: fav.userId,
+    restaurantId: fav.restaurantId,
+  }));
 
   return (
     <>
@@ -16,7 +36,7 @@ const RecomendedRestaurants = async () => {
               key={restaurant.id}
               restaurant={restaurant}
               className="min-w-full max-w-full" 
-              userFavoriteRestaurant={[]}            />
+              userFavoriteRestaurant={userFavoriteRestaurants}            />
           ))}
         </div>
       </div>
