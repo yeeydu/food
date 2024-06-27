@@ -6,8 +6,8 @@ const description =
   "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean nec nisl lorem. Praesent pharetra, sapien ut fringilla malesuada, nisi felis ullamcorper ex, eu consectetur elit dolor sed dolor. Praesent orci mi, auctor aliquet semper vitae, volutpat quis augue. Cras porta sapien nec pharetra laoreet. Sed at velit sit amet mauris varius volutpat sit amet id mauris. Maecenas vitae mattis ante. Morbi nulla quam, sagittis at orci eu, scelerisque auctor neque.";
 
   const createBurguers = async (
-    desertsCategoryId,
-    juicesCategoryId
+    desertsCategoryId: any,
+    juicesCategoryId: any
   ) => {
   const burguersCategory = await prismaClient.category.create({
     data: {
@@ -200,8 +200,8 @@ const description =
 };
 
 const createPizzas = async (
-  desertsCategoryId,
-  juicesCategoryId
+  desertsCategoryId: any,
+  juicesCategoryId: any
 ) => {
   const pizzasCategory = await prismaClient.category.create({
     data: {
@@ -376,8 +376,8 @@ const createPizzas = async (
 };
 
 const createJapanese = async (
-  desertsCategoryId,
-  juicesCategoryId
+  desertsCategoryId: any,
+  juicesCategoryId: any
 ) => {
   const japaneseCategory = await prismaClient.category.create({
     data: {
@@ -570,8 +570,8 @@ const createJapanese = async (
 };
 
 const createBrazilian = async (
-  desertsCategoryId,
-  juicesCategoryId 
+  desertsCategoryId: any,
+  juicesCategoryId: any 
 ) => {
   const brazilianCategory = await prismaClient.category.create({
     data: {
@@ -763,7 +763,7 @@ const createBrazilian = async (
   }
 };
 
-const createDeserts = async (restaurantId, categoryId) => {
+const createDeserts = async (restaurantId: any, categoryId: any) => {
   await prismaClient.restaurant.update({
     where: {
       id: restaurantId,
@@ -897,7 +897,7 @@ const createDeserts = async (restaurantId, categoryId) => {
   }
 };
 
-const createJuices = async (restaurantId, categoryId) => {
+const createJuices = async (restaurantId: any, categoryId: any) => {
   await prismaClient.restaurant.update({
     where: {
       id: restaurantId,

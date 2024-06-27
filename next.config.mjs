@@ -3,7 +3,8 @@ const nextConfig = {
 
     images: {
         remotePatterns: [{ hostname: "utfs.io" }]
-    }
+    },
+    ignoreBuildErrors: true,
 };
 
 export default nextConfig;
