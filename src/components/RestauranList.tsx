@@ -3,6 +3,11 @@ import db from "../lib/prisma";
 import RestaurantItem from "./RestaurantItem";
 import { authOptions } from "@/lib/auth";
 
+interface UserFavoriteRestaurant {
+  userId: string;
+  restaurantId: string;
+}
+
 const RestaurantList = async () => {
   const session = await getServerSession(authOptions);
 
@@ -15,6 +20,11 @@ const RestaurantList = async () => {
     },
   });
 
+  const userFavoriteRestaurants: UserFavoriteRestaurant[] = userFavoriteRestaurant.map(fav => ({
+    userId: fav.userId,
+    restaurantId: fav.restaurantId,
+  }));
+
   return (
     <div className="flex overflow-x-scroll gap-4 px-5 [&:: -webkit-scrollbar]:hidden ">
       {restaurants.map((restaurant) => (
@@ -22,7 +32,7 @@ const RestaurantList = async () => {
           restaurant={restaurant}
           key={restaurant.id}
           userId={session?.user.id}
-          userFavoriteRestaurant={userFavoriteRestaurant}
+          userFavoriteRestaurant={userFavoriteRestaurants}
         />
       ))}
     </div>

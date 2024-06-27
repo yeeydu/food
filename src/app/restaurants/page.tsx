@@ -10,6 +10,11 @@ import db from '../../lib/prisma';
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 
+interface UserFavoriteRestaurant {
+  userId: string;
+  restaurantId: string;
+}
+
 const Restaurants = async () => {
   const searchParams = useSearchParams();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
@@ -20,6 +25,11 @@ const Restaurants = async () => {
       userId: session?.user?.id
     } 
    })
+
+   const userFavoriteRestaurants: UserFavoriteRestaurant[] = userFavoriteRestaurant.map(fav => ({
+    userId: fav.userId,
+    restaurantId: fav.restaurantId,
+  }));
 
   const searchFor = searchParams.get("search");
 
@@ -47,7 +57,7 @@ const Restaurants = async () => {
             <RestaurantItem
               key={restaurant.id}
               restaurant={restaurant}
-              userFavoriteRestaurant={userFavoriteRestaurant} 
+              userFavoriteRestaurant={userFavoriteRestaurants} 
               className="min-w-full max-w-full"
             />
           ))}
