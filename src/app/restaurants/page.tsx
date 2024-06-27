@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-async-client-component */
 "use client";
 import { Restaurant } from "@prisma/client";
 import { notFound, useSearchParams } from "next/navigation";
@@ -5,10 +6,20 @@ import { useEffect, useState } from "react";
 import { searchForRestaurants } from "./_actions/search";
 import Header from "@/components/Header";
 import RestaurantItem from "@/components/RestaurantItem";
+import db from '../../lib/prisma';
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
-const Restaurants = () => {
+const Restaurants = async () => {
   const searchParams = useSearchParams();
   const [restaurants, setRestaurants] = useState<Restaurant[]>([]);
+  const session = await getServerSession(authOptions); 
+  
+  const userFavoriteRestaurant = await db.userFavoriteRestaurant.findMany({
+    where: {
+      userId: session?.user?.id
+    } 
+   })
 
   const searchFor = searchParams.get("search");
 
@@ -36,6 +47,7 @@ const Restaurants = () => {
             <RestaurantItem
               key={restaurant.id}
               restaurant={restaurant}
+              userFavoriteRestaurant={userFavoriteRestaurant} 
               className="min-w-full max-w-full"
             />
           ))}
