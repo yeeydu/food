@@ -15,8 +15,8 @@ const RecomendedRestaurants = async () => {
             <RestaurantItem
               key={restaurant.id}
               restaurant={restaurant}
-              className="min-w-full max-w-full"
-            />
+              className="min-w-full max-w-full" 
+              userFavoriteRestaurant={[]}            />
           ))}
         </div>
       </div>
