@@ -63,9 +63,9 @@ const RestaurantItem = ({
           </div>
           {userId && (
             <Button
-              size="icon"
-              className={`absolute top-2 right-2 rounded-full bg-gray-700 h-7 w-7 ${
-                isFavorite ?? "bg-primary hover:bg-gray-700"
+              size="icon" 
+              className={`absolute top-2 right-2 rounded-full bg-gray-700 h-7 w-7 hover:bg-red-700 ${
+                isFavorite && "bg-red-600 hover:bg-gray-700"
               }`}
               onClick={handleFavoriteClick}
             >
