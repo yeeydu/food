@@ -30,7 +30,7 @@ const RestaurantImage = ({
 
   const { handleFavoriteClick } = useToggleFavoriteRestaurant({
     restaurantId: restaurant.id,
-    userId: data?.user.id,
+    userId: data?.user?.id,
     restaurantIsFavorite: isFavorite,
     userFavoriteRestaurant,
   });

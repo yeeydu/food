@@ -21,6 +21,7 @@ const useToggleFavoriteRestaurant = ({
 
   const handleFavoriteClick = async () => {
     if (!userId) return;
+    
     try {
       await toggleFavoriteRestaurant(userId, restaurantId);
       toast(restaurantIsFavorite
@@ -32,7 +33,7 @@ const useToggleFavoriteRestaurant = ({
         }, 
     });
    } catch (error) {
-      toast.error("Error trying to favorite a Restaurant");
+      toast.error("Error trying to favorite a Restaurant, You most login to mark favorite");
     }
   };
 

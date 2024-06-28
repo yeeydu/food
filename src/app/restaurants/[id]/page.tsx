@@ -57,7 +57,7 @@ const RestaurantPage = async ({ params: { id } }: RestaurantPageProps) => {
   const session = await getServerSession(authOptions);
   const userFavoriteRestaurant = await db.userFavoriteRestaurant.findMany({
     where: {
-      userId: session.user.id,
+      userId: session?.user?.id,
     }
   })
 
