@@ -9,8 +9,8 @@ import PromoBanner from "@/components/PromoBanner";
 import RestaurantList from "@/components/RestauranList";
 import Link from "next/link";
 
-export default async function Home() {
-  const products = await db.product.findMany({
+const fetch = async () => {
+  const getProducts = db.product.findMany({
     where: {
       discountPercentage: {
         gt: 0,
@@ -20,12 +20,35 @@ export default async function Home() {
     include: {
       restaurant: {
         select: {
-          name: true, // this way we get the restaurant name from the product restautantId relation
+          name: true,
         },
       },
     },
   });
 
+  const getBurguersCategory = db.category.findFirst({
+    where: {
+      name: "Hambúrgueres",
+    },
+  });
+
+  const getPizzasCategory = db.category.findFirst({
+    where: {
+      name: "Pizzas",
+    },
+  });
+
+  const [products, burguersCategory, pizzasCategory] = await Promise.all([
+    getProducts,
+    getBurguersCategory,
+    getPizzasCategory,
+  ]);
+
+  return { products, burguersCategory, pizzasCategory };
+};
+
+export default async function Home() {
+  const { products, burguersCategory, pizzasCategory } = await fetch();
 
   return (
     <main className="flex min-h-screen flex-col">
@@ -37,32 +60,30 @@ export default async function Home() {
         <CategoryList />
       </div>
       <div className="px-5 pt-6">
-        <PromoBanner 
-        src="/promo-banner-01.png" 
-        alt="30% promotion" 
-        />
+        <Link href={`/categories/${pizzasCategory?.id}/products`}>
+          <PromoBanner src="/promo-banner-01.png" alt="30% promotion" />
+        </Link>
       </div>
       <div className="space-y-3 pt-6">
         <div className="px-5 flex justify-between items-center">
           <h2 className="font-semibold">Recommended Orders</h2>
-         <Button
+          <Button
             variant="ghost"
             className="text-primary px-0 hover:bg-transparent h-fit"
             asChild
           >
-         <Link href={"/products/recommended"}>
-            see all
-            <ChevronRightIcon size={16} />
-         </Link>
+            <Link href={"/products/recommended"}>
+              see all
+              <ChevronRightIcon size={16} />
+            </Link>
           </Button>
         </div>
         <ProductList products={products} />
       </div>
       <div className="px-5 pt-6">
-      <PromoBanner 
-        src="/promo-banner-02.png" 
-        alt="Desde 17 € " 
-        />
+        <Link href={`/categories/${burguersCategory?.id}/products`}>
+          <PromoBanner src="/promo-banner-02.png" alt="Desde 17 € " />
+        </Link>
       </div>
       <div className="space-y-4 py-6">
         <div className="px-5 flex justify-between items-center">
@@ -72,14 +93,14 @@ export default async function Home() {
             className="text-primary px-0 hover:bg-transparent h-fit"
             asChild
           >
-          <Link href="/restaurants/recomended">
-            see all
-            <ChevronRightIcon size={16} />
-          </Link>
+            <Link href="/restaurants/recomended">
+              see all
+              <ChevronRightIcon size={16} />
+            </Link>
           </Button>
         </div>
-        <RestaurantList   />
+        <RestaurantList />
       </div>
     </main>
-  ); 
+  );
 }
