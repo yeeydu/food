@@ -110,33 +110,55 @@ export const CartProvider = ({ children }: { children: ReactNode }) => {
     setProducts((prev) => [...prev, { ...product, quantity: quantity }]);
   };
 
-  const subTotalPrice = useMemo(() => {
-    return products.reduce((acc, product) => {
+  /* there is no need of useMemo when only one state */
+
+  // const subTotalPrice = useMemo(() => {
+  //   return products.reduce((acc, product) => {
+  //     // reduce takes a number from a list.
+  //     return acc + Number(product.price) * product.quantity;
+  //   }, 0);
+  // }, [products]);
+
+  // total with discount
+  // const totalPrice = useMemo(() => {
+  //   return (
+  //     products.reduce((acc, product) => {
+  //       return (
+    //         acc + calculateProductTotalPrice(product) * Number(product.quantity)
+    //       );
+    //     }, 0) + Number(products?.[0]?.restaurant.deliveryFee)
+    //   );
+    // }, [products]);
+    
+    // const totalQuantity = useMemo(() => {
+    //   return products.reduce((acc, product) => {
+    //     return acc + product.quantity;
+    //   }, 0);
+    // }, [products]);
+    
+  const subTotalPrice = products.reduce((acc, product) => {
       // reduce takes a number from a list.
       return acc + Number(product.price) * product.quantity;
     }, 0);
-  }, [products]);
 
-  // total with discount
-  const totalPrice = useMemo(() => {
-    return (
-      products.reduce((acc, product) => {
-        return (
-          acc + calculateProductTotalPrice(product) * Number(product.quantity)
-        );
-      }, 0) + Number(products?.[0]?.restaurant.deliveryFee)
-    );
-  }, [products]);
+
+    // total with discount
+  const totalPrice = products.reduce((acc, product) => {
+          return (
+            acc + calculateProductTotalPrice(product) * Number(product.quantity)
+          );
+        }, 0) + Number(products?.[0]?.restaurant.deliveryFee);
+      
 
   const totalDiscounts =
     subTotalPrice -
     (totalPrice - Number(products?.[0]?.restaurant.deliveryFee));
 
-  const totalQuantity = useMemo(() => {
-    return products.reduce((acc, product) => {
+
+  const totalQuantity =  products.reduce((acc, product) => {
       return acc + product.quantity;
     }, 0);
-  }, [products]);
+  
 
   const decreaseQuantityClick = (productId: string) => {
     return setProducts((prev) =>
