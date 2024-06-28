@@ -16,6 +16,9 @@ const Restaurants = async () => {
     where: {
       userId: session?.user?.id,
     },
+    include: {
+      restaurant: true,
+    }
   });
 
   const userFavoriteRestaurants = userFavoriteRestaurant.map((fav) => ({
