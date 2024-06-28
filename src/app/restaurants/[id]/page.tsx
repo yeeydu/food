@@ -6,6 +6,8 @@ import { StarIcon } from "lucide-react";
 import DeliveryInfo from "@/components/DeliveryInfo";
 import ProductList from "@/components/ProductList";
 import CartBanner from "./CartBanner";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
  
 
 interface RestaurantPageProps {
@@ -52,10 +54,17 @@ const RestaurantPage = async ({ params: { id } }: RestaurantPageProps) => {
 
   if (!restaurant) return notFound();
 
+  const session = await getServerSession(authOptions);
+  const userFavoriteRestaurant = await db.userFavoriteRestaurant.findMany({
+    where: {
+      userId: session.user.id,
+    }
+  })
+
   return (
     <>
       <div>
-        <RestaurantImage restaurant={restaurant} />
+        <RestaurantImage restaurant={restaurant} userFavoriteRestaurant={userFavoriteRestaurant} />
       </div>
       <div className="flex justify-between item-center pt-5 px-5">
         <div className="flex item-center gap-[0.35rem]">
