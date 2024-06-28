@@ -36,6 +36,7 @@ export default function Header() {
           <Image
             src="/food-logo.png"
             fill
+             sizes="100%"
             alt="logo"
             className="object-contain"
           />
