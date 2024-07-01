@@ -59,7 +59,7 @@ export default async function Home() {
       <div className="px-5 pt-6">
         <CategoryList />
       </div>
-      <div className="px-5 pt-6">
+      <div className="px-5 pt-6 md:hidden">
         <Link href={`/categories/${pizzasCategory?.id}/products`}>
           <PromoBanner src="/promo-banner-01.png" alt="30% promotion" />
         </Link>
@@ -80,10 +80,23 @@ export default async function Home() {
         </div>
         <ProductList products={products} />
       </div>
-      <div className="px-5 pt-6">
+      <div className="px-5 pt-6 md:hidden">
         <Link href={`/categories/${burguersCategory?.id}/products`}>
           <PromoBanner src="/promo-banner-02.png" alt="Desde 17 € " />
         </Link>
+      </div>
+      {/* hidden promotional banners for small devices */}
+      <div className="px-5 pt-6 hidden md:block">
+        <div className="flex justify-center gap-4">
+          <Link href={`/categories/${burguersCategory?.id}/products`}>
+            <PromoBanner src="/promo-banner-02.png" alt="Desde 17 € " />
+          </Link>
+          <div className="flex justify-center gap-2">
+            <Link href={`/categories/${pizzasCategory?.id}/products`}>
+              <PromoBanner src="/promo-banner-01.png" alt="30% promotion" />
+            </Link>
+          </div>
+        </div>
       </div>
       <div className="space-y-4 py-6">
         <div className="px-5 flex justify-between items-center">
